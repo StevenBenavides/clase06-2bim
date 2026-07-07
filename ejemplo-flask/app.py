@@ -5,7 +5,7 @@ import json
 app = Flask(__name__, template_folder='templates')
 app.config['SECRET_KEY'] = 'una-clave-secreta-000001'
 
-token = 'baa3297a4c53b5516f4fc6a9cc50f859271b4cc8'
+token = '994d6aebf03413c8e19e10a50cf31c09cdddff52'
 headers = {
         "Authorization": f"Token {token}",
         "Content-Type": "application/json"
@@ -21,10 +21,11 @@ def los_estudiantes():
     """
     """
     r = requests.get("http://localhost:8000/api/estudiantes/",
-            auth=('rene', '1'))
+            auth=('steven', '1234'))
     print("---------------------")
     print(r.content)
     print("---------------------")
+    # el results es el que contiene la lista de estudiantes 
     estudiantes = json.loads(r.content)['results']
 
     numero_estudiantes = json.loads(r.content)['count']
@@ -53,7 +54,7 @@ def los_telefonos():
     """
     """
     r = requests.get("http://localhost:8000/api/numerosts/",
-            auth=('rene', '1'))
+            auth=('steven', '1234'))
     datos = json.loads(r.content)['results']
     numero = json.loads(r.content)['count']
     return render_template("lostelefonos.html", datos=datos,
@@ -125,6 +126,15 @@ def agregar_estudiante():
 
     # Si es una petición GET o si hubo un error en POST, muestra el formulario
     return render_template("crear_estudiante.html")
+@app.route("/las/direcciones", methods=['GET', 'POST'])
+def las_direcciones():
+    """
+    """
+    r = requests.get("http://localhost:8000/api/direcciones/", headers=headers)
+    datos = json.loads(r.content)['results']
+    numero = json.loads(r.content)['count']
+    return render_template("lasdirecciones.html", datos=datos,
+    numero=numero)
 
 @app.route("/crear/numero/telefonico", methods=['GET', 'POST'])
 def crear_numero_telefonico():
@@ -164,3 +174,5 @@ def crear_numero_telefonico():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+

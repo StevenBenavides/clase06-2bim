@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direcciones</title>
+</head>
+    <body>
+        <h1>Listado de Direcciones</h1>
+
+        {% for d in direcciones %}
+        <ol>
+            <li><b>Descripción: </b>{{d['descripcion']}}</li>
+            <li><b>Tipo: </b>{{d['tipo']}}</li>
+        </ol>
+        <hr>
+        {% endfor %}
+    </body>
+
+</html>

@@ -12,6 +12,7 @@ router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'estudiantes', views.EstudianteViewSet)
 router.register(r'numerosts', views.NumeroTelefonicoViewSet)
+router.register(r'direcciones', views.DireccionViewSet)
 
 
 urlpatterns = [
@@ -36,5 +37,10 @@ urlpatterns = [
         path('entrando/login/', views.ingreso, name="login"),
         path('api/', include(router.urls)),
         path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+        # direcciones
+        path('crear/direccion', views.crear_direccion,
+            name='crear_direccion'),
+        path('editar/direccion/<int:id>', views.editar_direccion,
+            name='editar_direccion'),
 
  ]

@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django import forms
 
 from administrativo.models import Estudiante, \
-        NumeroTelefonico
+        NumeroTelefonico, Direccion
 
 class EstudianteForm(ModelForm):
     class Meta:
@@ -68,3 +68,9 @@ class NumeroTelefonicoEstudianteForm(ModelForm):
     class Meta:
         model = NumeroTelefonico
         fields = ['telefono', 'tipo', 'estudiante']
+
+class DireccionForm(ModelForm):
+    class Meta:
+        model = Direccion
+        fields = ['descripcion', 'tipo', 'estudiante']
+

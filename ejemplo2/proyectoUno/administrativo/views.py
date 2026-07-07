@@ -12,14 +12,14 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
 from administrativo.serializers import UserSerializer, GroupSerializer, \
-EstudianteSerializer, NumeroTelefonicoSerializer
+EstudianteSerializer, NumeroTelefonicoSerializer, DireccionSerializer
 
 # importar las clases de models.py
-from administrativo.models import Estudiante, NumeroTelefonico
+from administrativo.models import Estudiante, NumeroTelefonico, Direccion
 
 # importar los formularios de forms.py
 from administrativo.forms import EstudianteForm, NumeroTelefonicoEstudianteForm, \
-NumeroTelefonicoForm
+NumeroTelefonicoForm, DireccionForm
 
 # Create your views here.
 
@@ -159,13 +159,47 @@ def crear_numero_telefonico_estudiante(request, id):
 
     return render(request, 'crearNumeroTelefonicoEstudiante.html', diccionario)
 
+def crear_direccion(request):
+    """
+    """
+
+    if request.method=='POST':
+        formulario = DireccionForm(request.POST)
+        print(formulario.errors)
+        if formulario.is_valid():
+            formulario.save()
+            return redirect(index)
+    else:
+        formulario = DireccionForm()
+    diccionario = {'formulario': formulario}
+
+    return render(request, 'crearDireccion.html', diccionario)
+
+def editar_direccion(request, id):
+    """
+    """
+    direccion = Direccion.objects.get(pk=id)
+    if request.method=='POST':
+        formulario = DireccionForm(request.POST, instance=direccion)
+        print(formulario.errors)
+        if formulario.is_valid():
+            formulario.save()
+            return redirect(index)
+    else:
+        formulario = DireccionForm(instance=direccion)
+    diccionario = {'formulario': formulario}
+
+    return render(request, 'crearDireccion.html', diccionario)
+
 # crear vistas a través de viewsets
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
     queryset = User.objects.all().order_by('-date_joined')
+    # aqui se indica el serializador que se va a utilizar para la vista
     serializer_class = UserSerializer
+    # aqui se indica que solo los usuarios autenticados pueden acceder a la vista
     permission_classes = [permissions.IsAuthenticated]
 
 
@@ -197,3 +231,12 @@ class NumeroTelefonicoViewSet(viewsets.ModelViewSet):
     queryset = NumeroTelefonico.objects.all()
     serializer_class = NumeroTelefonicoSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+class DireccionViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = Direccion.objects.all()
+    serializer_class = DireccionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
