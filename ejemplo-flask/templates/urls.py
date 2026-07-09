@@ -12,6 +12,8 @@ router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'estudiantes', views.EstudianteViewSet)
 router.register(r'numerosts', views.NumeroTelefonicoViewSet)
+router.register(r'direcciones', views.DireccionViewSet)
+
 
 
 urlpatterns = [
@@ -32,6 +34,8 @@ urlpatterns = [
         path('crear/numero/telefonico/estudiante/<int:id>',
             views.crear_numero_telefonico_estudiante,
             name='crear_numero_telefonico_estudiante'),
+        path('crear/direccion', views.crear_direccion,
+            name='crear_direccion'),
         path('saliendo/logout/', views.logout_view, name="logout_view"),
         path('entrando/login/', views.ingreso, name="login"),
         path('api/', include(router.urls)),

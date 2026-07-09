@@ -6,12 +6,13 @@
     <title>Direcciones</title>
 </head>
     <body>
-        <h1>Listado de Direcciones</h1>
+        <h1>Listado de Direcciones - {{ numero }}</h1>
 
-        {% for d in direcciones %}
+        {% for d in datos %}
         <ol>
             <li><b>Descripción: </b>{{d['descripcion']}}</li>
             <li><b>Tipo: </b>{{d['tipo']}}</li>
+            <li><b>Estudiante: </b>{{d['estudiante']}}</li>
         </ol>
         <hr>
         {% endfor %}

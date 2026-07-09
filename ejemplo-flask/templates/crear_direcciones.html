@@ -22,16 +22,27 @@
 
         <form method="POST">
             <div>
-                <label for="direccion">Dirección:</label>
-                <input type="text" id="direccion" name="direccion" required>
+                <label for="descripcion">Dirección:</label>
+                <input type="text" id="descripcion" name="descripcion" required>
             </div>
             <div>
-                <label for="ciudad">Ciudad:</label>
-                <input type="text" id="ciudad" name="ciudad" required>
+                <label for="tipo">Tipo:</label>
+                <input type="text" id="tipo" name="tipo" required>
             </div>
             <div>
-                <label for="pais">País:</label>
-                <input type="text" id="pais" name="pais" required>
+                <label for="estudiante">Estudiante:</label>
+                <select id="estudiante" name="estudiante" required>
+                    {% if estudiantes %}
+                        {# Se itera sobre la lista de estudiantes obtenida de la API #}
+                        {% for estudiante in estudiantes %}
+                            {# El 'value' del option debe ser la URL completa del estudiante #}
+                            {# ya que tu DireccionSerializer espera un HyperlinkedRelatedField #}
+                            <option value="{{ estudiante.url }}">{{ estudiante.nombre }} {{ estudiante.apellido }} ({{ estudiante.cedula }})</option>
+                        {% endfor %}
+                    {% else %}
+                        <option value="">No hay estudiantes disponibles</option>
+                    {% endif %}
+                </select>
             </div>
             <button type="submit">Crear Dirección</button>
         </form>

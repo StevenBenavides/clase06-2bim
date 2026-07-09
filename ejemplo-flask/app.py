@@ -93,17 +93,19 @@ def obtener_estudiante(url):
     nombre_estudiante = json.loads(r.content)['nombre']
     return nombre_estudiante
 
+
 @app.route("/crear/estudiante", methods=['GET', 'POST'])
 def agregar_estudiante():
     """
     """
+    # aqui se obtiene los datos del formulario y se envía a la API de Django
     if request.method == 'POST':
         nombre = request.form['nombre']
         apellido = request.form['apellido']
         cedula = request.form['cedula']
         correo = request.form['correo']
 
-        # Datos a enviar a la API de Django
+        # Datos a enviar a la API de Django como un diccionario
         estudiante_data = {
             'nombre': nombre,
             'apellido': apellido,
@@ -113,6 +115,7 @@ def agregar_estudiante():
 
 
         # Realizar la petición POST a la API de Django
+        # aqui el requests.post envía los datos al endpoint de la API de Django para crear un nuevo estudiante
         r = requests.post("http://localhost:8000/api/estudiantes/",
                               json=estudiante_data, # 'json' serializa el diccionario a JSON automáticamente
                               headers=headers)
@@ -126,14 +129,22 @@ def agregar_estudiante():
 
     # Si es una petición GET o si hubo un error en POST, muestra el formulario
     return render_template("crear_estudiante.html")
-@app.route("/las/direcciones", methods=['GET', 'POST'])
+@app.route("/las/direcciones")
 def las_direcciones():
     """
     """
     r = requests.get("http://localhost:8000/api/direcciones/", headers=headers)
+    
     datos = json.loads(r.content)['results']
     numero = json.loads(r.content)['count']
-    return render_template("lasdirecciones.html", datos=datos,
+    datos2 = []
+    for d in datos:
+        datos2.append({
+            'descripcion': d['descripcion'],
+            'tipo': d['tipo'],
+            'estudiante': obtener_estudiante(d['estudiante'])
+        })
+    return render_template("lasdirecciones.html", datos=datos2,
     numero=numero)
 
 @app.route("/crear/numero/telefonico", methods=['GET', 'POST'])
@@ -156,7 +167,7 @@ def crear_numero_telefonico():
             'tipo': tipo,
             'estudiante': estudiante_url # Enviamos la URL del estudiante
         }
-
+# aqui se hace la petición POST a la API de Django para crear un nuevo número telefónico
         r = requests.post("http://localhost:8000/api/numerosts/",
                               json=numero_telefonico_data,
                               headers=headers)
@@ -172,7 +183,39 @@ def crear_numero_telefonico():
                            )
 
 
+@app.route("/crear/direccion", methods=['GET', 'POST'])
+def crear_direccion():
+    """
+    """
+    estudiantes_disponibles = []
+
+    r_estudiantes = requests.get("http://localhost:8000/api/estudiantes/", headers=headers)
+    estudiantes_disponibles = json.loads(r_estudiantes.content)['results']
+
+    if request.method == 'POST':
+        descripcion = request.form['descripcion']
+        tipo = request.form['tipo']
+        estudiante_url = request.form['estudiante']
+
+        direccion_data = {
+            'descripcion': descripcion,
+            'tipo': tipo,
+            'estudiante': estudiante_url
+        }
+
+        r = requests.post("http://localhost:8000/api/direcciones/",
+                              json=direccion_data,
+                              headers=headers)
+
+        print(f"Status Code (Crear Dirección): {r.status_code}")
+
+        nueva_direccion = json.loads(r.content)
+        flash(f"Dirección '{nueva_direccion['descripcion']}' creada exitosamente para el estudiante!", 'success')
+        return redirect(url_for('las_direcciones'))
+
+    return render_template("crear_direcciones.html",
+                           estudiantes=estudiantes_disponibles,
+                           )
+
 if __name__ == "__main__":
     app.run(debug=True)
-
-
